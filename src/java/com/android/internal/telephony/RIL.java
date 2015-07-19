@@ -758,6 +758,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
         send(rr);
     }
 
+    /*
     // FIXME This API should take an AID and slot ID
     public void setDataAllowed(boolean allowed, Message result) {
         RILRequest rr = RILRequest.obtain(RIL_REQUEST_ALLOW_DATA, result);
@@ -768,6 +769,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
         rr.mParcel.writeInt(allowed ? 1 : 0);
         send(rr);
     }
+    */
 
     public void
     getDataCallProfile(int appType, Message result) {
@@ -1314,11 +1316,14 @@ public class RIL extends BaseCommands implements CommandsInterface {
     @Override
     public void
     getHardwareConfig (Message result) {
+        riljLog("unsupported RIL-function: getHardwareConfig");
+    /*
         RILRequest rr = RILRequest.obtain(RIL_REQUEST_GET_HARDWARE_CONFIG, result);
 
         if (RILJ_LOGD) riljLog(rr.serialString() + "> " + requestToString(rr.mRequest));
 
         send(rr);
+    */
     }
 
     @Override
@@ -1724,6 +1729,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
         send(rr);
     }
 
+    /*
     @Override
     public void requestShutdown(Message result) {
         RILRequest rr = RILRequest.obtain(RIL_REQUEST_SHUTDOWN, result);
@@ -1733,6 +1739,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
 
         send(rr);
     }
+    */
 
     @Override
     public void
@@ -2800,9 +2807,12 @@ public class RIL extends BaseCommands implements CommandsInterface {
             case RIL_REQUEST_GET_CELL_INFO_LIST: ret = responseCellInfoList(p); break;
             case RIL_REQUEST_SET_UNSOL_CELL_INFO_LIST_RATE: ret = responseVoid(p); break;
             case RIL_REQUEST_SET_INITIAL_ATTACH_APN: ret = responseVoid(p); break;
+            /*
             case RIL_REQUEST_SET_DATA_PROFILE: ret = responseVoid(p); break;
+            */
             case RIL_REQUEST_IMS_REGISTRATION_STATE: ret = responseInts(p); break;
             case RIL_REQUEST_IMS_SEND_SMS: ret =  responseSMS(p); break;
+            /*
             case RIL_REQUEST_SIM_TRANSMIT_APDU_BASIC: ret =  responseICC_IO(p); break;
             case RIL_REQUEST_SIM_OPEN_CHANNEL: ret  = responseInts(p); break;
             case RIL_REQUEST_SIM_CLOSE_CHANNEL: ret  = responseVoid(p); break;
@@ -2812,11 +2822,14 @@ public class RIL extends BaseCommands implements CommandsInterface {
             case RIL_REQUEST_NV_WRITE_ITEM: ret = responseVoid(p); break;
             case RIL_REQUEST_NV_WRITE_CDMA_PRL: ret = responseVoid(p); break;
             case RIL_REQUEST_NV_RESET_CONFIG: ret = responseVoid(p); break;
+            */
             case RIL_REQUEST_SET_UICC_SUBSCRIPTION: ret = responseVoid(p); break;
+/*            
             case RIL_REQUEST_ALLOW_DATA: ret = responseVoid(p); break;
             case RIL_REQUEST_GET_HARDWARE_CONFIG: ret = responseHardwareConfig(p); break;
             case RIL_REQUEST_SIM_AUTHENTICATION: ret =  responseICC_IOBase64(p); break;
             case RIL_REQUEST_SHUTDOWN: ret = responseVoid(p); break;
+*/
             default:
                 throw new RuntimeException("Unrecognized solicited response: " + rr.mRequest);
             //break;
@@ -2835,6 +2848,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
             }
         }
 
+        /*
         if (rr.mRequest == RIL_REQUEST_SHUTDOWN) {
             // Set RADIO_STATE to RADIO_UNAVAILABLE to continue shutdown process
             // regardless of error code to continue shutdown procedure.
@@ -2842,6 +2856,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
                     error + " Setting Radio State to Unavailable regardless of error.");
             setRadioState(RadioState.RADIO_UNAVAILABLE);
         }
+        */
 
         // Here and below fake RIL_UNSOL_RESPONSE_SIM_STATUS_CHANGED, see b/7255789.
         // This is needed otherwise we don't automatically transition to the main lock
@@ -2898,8 +2913,8 @@ public class RIL extends BaseCommands implements CommandsInterface {
             case RIL_REQUEST_GET_IMSI:
             case RIL_REQUEST_GET_IMEI:
             case RIL_REQUEST_GET_IMEISV:
-            case RIL_REQUEST_SIM_OPEN_CHANNEL:
-            case RIL_REQUEST_SIM_TRANSMIT_APDU_CHANNEL:
+            //case RIL_REQUEST_SIM_OPEN_CHANNEL:
+            //case RIL_REQUEST_SIM_TRANSMIT_APDU_CHANNEL:
 
                 if (!RILJ_LOGV) {
                     // If not versbose logging just return and don't display IMSI and IMEI, IMEISV
@@ -2951,14 +2966,18 @@ public class RIL extends BaseCommands implements CommandsInterface {
                 sb.append(cell).append(" ");
             }
             s = sb.toString();
-        } else if (req == RIL_REQUEST_GET_HARDWARE_CONFIG) {
+        } 
+        /*
+        else if (req == RIL_REQUEST_GET_HARDWARE_CONFIG) {
             ArrayList<HardwareConfig> hwcfgs = (ArrayList<HardwareConfig>) ret;
             sb = new StringBuilder(" ");
             for (HardwareConfig hwcfg : hwcfgs) {
                 sb.append("[").append(hwcfg).append("] ");
             }
             s = sb.toString();
-        } else {
+        }
+        */
+        else {
             s = ret.toString();
         }
         return s;
@@ -3016,8 +3035,10 @@ public class RIL extends BaseCommands implements CommandsInterface {
             case RIL_UNSOL_CELL_INFO_LIST: ret = responseCellInfoList(p); break;
             case RIL_UNSOL_RESPONSE_IMS_NETWORK_STATE_CHANGED: ret =  responseVoid(p); break;
             case RIL_UNSOL_UICC_SUBSCRIPTION_STATUS_CHANGED: ret =  responseInts(p); break;
+            /*
             case RIL_UNSOL_SRVCC_STATE_NOTIFY: ret = responseInts(p); break;
             case RIL_UNSOL_HARDWARE_CONFIG_CHANGED: ret = responseHardwareConfig(p); break;
+            */
             case RIL_UNSOL_ON_SS: ret =  responseSsData(p); break;
             case RIL_UNSOL_STK_CC_ALPHA_NOTIFY: ret =  responseString(p); break;
             case RIL_UNSOL_STK_SEND_SMS_RESULT: ret = responseInts(p); break; // Samsung STK
@@ -3413,6 +3434,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
                 }
                 break;
             }
+            /*
             case RIL_UNSOL_SRVCC_STATE_NOTIFY: {
                 if (RILJ_LOGD) unsljLogRet(response, ret);
 
@@ -3430,6 +3452,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
                                              new AsyncResult (null, ret, null));
                 }
                 break;
+            */
             case RIL_UNSOL_ON_SS:
                 if (RILJ_LOGD) unsljLogRet(response, ret);
 
@@ -4461,9 +4484,12 @@ public class RIL extends BaseCommands implements CommandsInterface {
             case RIL_REQUEST_GET_CELL_INFO_LIST: return "RIL_REQUEST_GET_CELL_INFO_LIST";
             case RIL_REQUEST_SET_UNSOL_CELL_INFO_LIST_RATE: return "RIL_REQUEST_SET_CELL_INFO_LIST_RATE";
             case RIL_REQUEST_SET_INITIAL_ATTACH_APN: return "RIL_REQUEST_SET_INITIAL_ATTACH_APN";
+            /*
             case RIL_REQUEST_SET_DATA_PROFILE: return "RIL_REQUEST_SET_DATA_PROFILE";
+            */
             case RIL_REQUEST_IMS_REGISTRATION_STATE: return "RIL_REQUEST_IMS_REGISTRATION_STATE";
             case RIL_REQUEST_IMS_SEND_SMS: return "RIL_REQUEST_IMS_SEND_SMS";
+            /*
             case RIL_REQUEST_SIM_TRANSMIT_APDU_BASIC: return "RIL_REQUEST_SIM_TRANSMIT_APDU_BASIC";
             case RIL_REQUEST_SIM_OPEN_CHANNEL: return "RIL_REQUEST_SIM_OPEN_CHANNEL";
             case RIL_REQUEST_SIM_CLOSE_CHANNEL: return "RIL_REQUEST_SIM_CLOSE_CHANNEL";
@@ -4472,11 +4498,14 @@ public class RIL extends BaseCommands implements CommandsInterface {
             case RIL_REQUEST_NV_WRITE_ITEM: return "RIL_REQUEST_NV_WRITE_ITEM";
             case RIL_REQUEST_NV_WRITE_CDMA_PRL: return "RIL_REQUEST_NV_WRITE_CDMA_PRL";
             case RIL_REQUEST_NV_RESET_CONFIG: return "RIL_REQUEST_NV_RESET_CONFIG";
+            */
             case RIL_REQUEST_SET_UICC_SUBSCRIPTION: return "RIL_REQUEST_SET_UICC_SUBSCRIPTION";
+            /*
             case RIL_REQUEST_ALLOW_DATA: return "RIL_REQUEST_ALLOW_DATA";
             case RIL_REQUEST_GET_HARDWARE_CONFIG: return "GET_HARDWARE_CONFIG";
             case RIL_REQUEST_SIM_AUTHENTICATION: return "RIL_REQUEST_SIM_AUTHENTICATION";
             case RIL_REQUEST_SHUTDOWN: return "RIL_REQUEST_SHUTDOWN";
+            */
             default: return "<unknown request>";
         }
     }
@@ -4531,9 +4560,11 @@ public class RIL extends BaseCommands implements CommandsInterface {
                 return "UNSOL_RESPONSE_IMS_NETWORK_STATE_CHANGED";
             case RIL_UNSOL_UICC_SUBSCRIPTION_STATUS_CHANGED:
                     return "RIL_UNSOL_UICC_SUBSCRIPTION_STATUS_CHANGED";
+            /*
             case RIL_UNSOL_SRVCC_STATE_NOTIFY:
                     return "UNSOL_SRVCC_STATE_NOTIFY";
             case RIL_UNSOL_HARDWARE_CONFIG_CHANGED: return "RIL_UNSOL_HARDWARE_CONFIG_CHANGED";
+            */
             case RIL_UNSOL_ON_SS: return "UNSOL_ON_SS";
             case RIL_UNSOL_STK_CC_ALPHA_NOTIFY: return "UNSOL_STK_CC_ALPHA_NOTIFY";
             case RIL_UNSOL_STK_SEND_SMS_RESULT: return "RIL_UNSOL_STK_SEND_SMS_RESULT";
@@ -4820,6 +4851,8 @@ public class RIL extends BaseCommands implements CommandsInterface {
     @Override
     public void requestIccSimAuthentication(int authContext, String data, String aid,
                                             Message response) {
+        riljLog("unsupported RIL-function: requestIccSimAuthentication");
+        /*
         RILRequest rr = RILRequest.obtain(RIL_REQUEST_SIM_AUTHENTICATION, response);
 
         rr.mParcel.writeInt(authContext);
@@ -4829,6 +4862,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
         if (RILJ_LOGD) riljLog(rr.serialString() + "> " + requestToString(rr.mRequest));
 
         send(rr);
+        */
     }
 
     /**
@@ -4878,6 +4912,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
         send(rr);
     }
 
+    /*
     public void setDataProfile(DataProfile[] dps, Message result) {
         if (RILJ_LOGD) riljLog("Set RIL_REQUEST_SET_DATA_PROFILE");
 
@@ -4894,6 +4929,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
 
         send(rr);
     }
+    */
 
     /* (non-Javadoc)
      * @see com.android.internal.telephony.BaseCommands#testingEmergencyCall()
@@ -4931,6 +4967,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
     /**
      * {@inheritDoc}
      */
+    /*
     @Override
     public void iccOpenLogicalChannel(String AID, Message response) {
         if(mRilVersion < 10) {
@@ -4951,10 +4988,12 @@ public class RIL extends BaseCommands implements CommandsInterface {
 
         send(rr);
     }
+    */
 
     /**
      * {@inheritDoc}
      */
+    /*
     @Override
     public void iccCloseLogicalChannel(int channel, Message response) {
         RILRequest rr = RILRequest.obtain(RIL_REQUEST_SIM_CLOSE_CHANNEL, response);
@@ -4966,10 +5005,12 @@ public class RIL extends BaseCommands implements CommandsInterface {
 
         send(rr);
     }
+    */
 
     /**
      * {@inheritDoc}
      */
+    /*
     @Override
     public void iccTransmitApduLogicalChannel(int channel, int cla, int instruction,
             int p1, int p2, int p3, String data, Message response) {
@@ -4992,20 +5033,24 @@ public class RIL extends BaseCommands implements CommandsInterface {
         iccTransmitApduHelper(RIL_REQUEST_SIM_TRANSMIT_APDU_CHANNEL, channel, cla,
                 instruction, p1, p2, p3, data, response);
     }
+    */
 
     /**
      * {@inheritDoc}
      */
+    /*
     @Override
     public void iccTransmitApduBasicChannel(int cla, int instruction, int p1, int p2,
             int p3, String data, Message response) {
         iccTransmitApduHelper(RIL_REQUEST_SIM_TRANSMIT_APDU_BASIC, 0, cla, instruction,
                 p1, p2, p3, data, response);
     }
+    */
 
     /**
      * {@inheritDoc}
      */
+    /*
     @Override
     public void getAtr(Message response) {
         RILRequest rr = RILRequest.obtain(RIL_REQUEST_SIM_GET_ATR, response);
@@ -5017,6 +5062,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
 
         send(rr);
     }
+    */
 
     /*
      * Helper function for the iccTransmitApdu* commands above.
@@ -5051,6 +5097,8 @@ public class RIL extends BaseCommands implements CommandsInterface {
 
     @Override
     public void nvReadItem(int itemID, Message response) {
+        riljLog("unsupported RIL-function: nvReadItem");
+        /*
         RILRequest rr = RILRequest.obtain(RIL_REQUEST_NV_READ_ITEM, response);
 
         rr.mParcel.writeInt(itemID);
@@ -5059,10 +5107,13 @@ public class RIL extends BaseCommands implements CommandsInterface {
                 + ' ' + itemID);
 
         send(rr);
+        */
     }
-
+    
     @Override
     public void nvWriteItem(int itemID, String itemValue, Message response) {
+        riljLog("unsupported RIL-function: nvWriteItem");
+        /*
         RILRequest rr = RILRequest.obtain(RIL_REQUEST_NV_WRITE_ITEM, response);
 
         rr.mParcel.writeInt(itemID);
@@ -5072,10 +5123,13 @@ public class RIL extends BaseCommands implements CommandsInterface {
                 + ' ' + itemID + ": " + itemValue);
 
         send(rr);
+        */
     }
 
     @Override
     public void nvWriteCdmaPrl(byte[] preferredRoamingList, Message response) {
+        riljLog("unsupported RIL-function: nvWriteCdmaPrl");
+        /*
         RILRequest rr = RILRequest.obtain(RIL_REQUEST_NV_WRITE_CDMA_PRL, response);
 
         rr.mParcel.writeByteArray(preferredRoamingList);
@@ -5084,10 +5138,13 @@ public class RIL extends BaseCommands implements CommandsInterface {
                 + " (" + preferredRoamingList.length + " bytes)");
 
         send(rr);
+        */
     }
-
+    
     @Override
     public void nvResetConfig(int resetType, Message response) {
+        riljLog("unsupported RIL-function: nvResetConfig");
+        /*
         RILRequest rr = RILRequest.obtain(RIL_REQUEST_NV_RESET_CONFIG, response);
 
         rr.mParcel.writeInt(1);
@@ -5097,5 +5154,6 @@ public class RIL extends BaseCommands implements CommandsInterface {
                 + ' ' + resetType);
 
         send(rr);
+        */
     }
 }
